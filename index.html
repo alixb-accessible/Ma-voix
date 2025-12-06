@@ -78,43 +78,62 @@
 
         .controls {
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            flex-wrap: wrap;
             margin-bottom: 20px;
         }
 
         .controls > div {
-            flex: 1;
-            min-width: 200px;
+            width: 100%;
         }
 
         select {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #d1d5db;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 18px;
             background: white;
             cursor: pointer;
             transition: border-color 0.3s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
         }
 
         select:focus {
             outline: none;
             border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        optgroup {
+            font-weight: bold;
+            font-size: 16px;
+            color: #1f2937;
+            padding: 8px 0;
+        }
+
+        option {
+            padding: 10px;
+            font-size: 16px;
         }
 
         .buttons {
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
         button {
-            flex: 1;
-            min-width: 140px;
-            padding: 15px 30px;
-            font-size: 18px;
+            width: 100%;
+            padding: 18px 30px;
+            font-size: 20px;
             font-weight: 600;
             border: none;
             border-radius: 10px;
@@ -122,11 +141,20 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .btn-speak {
             background: #22c55e;
             color: white;
+        }
+
+        .btn-speak:active {
+            background: #16a34a;
+            transform: scale(0.98);
         }
 
         .btn-speak:hover {
@@ -146,6 +174,11 @@
             color: white;
         }
 
+        .btn-stop:active {
+            background: #b91c1c;
+            transform: scale(0.98);
+        }
+
         .btn-stop:hover {
             background: #b91c1c;
             transform: translateY(-2px);
@@ -161,6 +194,11 @@
         .btn-clear {
             background: #6b7280;
             color: white;
+        }
+
+        .btn-clear:active {
+            background: #4b5563;
+            transform: scale(0.98);
         }
 
         .btn-clear:hover {
@@ -190,15 +228,36 @@
 
         @media (max-width: 600px) {
             .container {
-                padding: 25px;
+                padding: 20px;
             }
 
             h1 {
-                font-size: 1.5em;
+                font-size: 1.6em;
+                margin-bottom: 25px;
+            }
+
+            textarea {
+                min-height: 120px;
+                font-size: 18px;
+            }
+
+            label {
+                font-size: 1em;
+            }
+
+            select {
+                font-size: 16px;
+                padding: 14px;
+                padding-right: 40px;
             }
 
             button {
-                min-width: 100%;
+                padding: 16px;
+                font-size: 18px;
+            }
+
+            .status {
+                font-size: 15px;
             }
         }
     </style>
@@ -225,6 +284,7 @@
                 <label for="rateSelect">Vitesse :</label>
                 <select id="rateSelect" aria-label="Sélection de la vitesse">
                     <option value="0.5">Très lent</option>
+                    <option value="0.6">🦇 Batman (Lent et menaçant)</option>
                     <option value="0.75">Lent</option>
                     <option value="1" selected>Normal</option>
                     <option value="1.25">Rapide</option>
@@ -234,11 +294,13 @@
             <div>
                 <label for="pitchSelect">Hauteur :</label>
                 <select id="pitchSelect" aria-label="Sélection de la hauteur de la voix">
-                    <option value="0.5">Très grave</option>
+                    <option value="0.5">🦇 Batman (Ultra grave)</option>
+                    <option value="0.6">Très très grave</option>
                     <option value="0.75">Grave</option>
                     <option value="1" selected>Normal</option>
                     <option value="1.25">Aigu</option>
                     <option value="1.5">Très aigu</option>
+                    <option value="2">Très très aigu</option>
                 </select>
             </div>
         </div>
@@ -264,6 +326,7 @@
         const textInput = document.getElementById('textInput');
         const voiceSelect = document.getElementById('voiceSelect');
         const rateSelect = document.getElementById('rateSelect');
+        const pitchSelect = document.getElementById('pitchSelect');
         const speakBtn = document.getElementById('speakBtn');
         const stopBtn = document.getElementById('stopBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -277,26 +340,87 @@
             voices = synthesis.getVoices();
             voiceSelect.innerHTML = '';
             
-            // Filtrer et trier les voix françaises en priorité
+            // Séparer les voix françaises masculines et féminines
             const frenchVoices = voices.filter(v => v.lang.startsWith('fr'));
-            const otherVoices = voices.filter(v => !v.lang.startsWith('fr'));
+            const maleVoices = frenchVoices.filter(v => 
+                v.name.toLowerCase().includes('male') || 
+                v.name.toLowerCase().includes('homme') ||
+                v.name.toLowerCase().includes('thomas') ||
+                v.name.toLowerCase().includes('daniel')
+            );
+            const femaleVoices = frenchVoices.filter(v => 
+                v.name.toLowerCase().includes('female') || 
+                v.name.toLowerCase().includes('femme') ||
+                v.name.toLowerCase().includes('amélie') ||
+                v.name.toLowerCase().includes('marie') ||
+                v.name.toLowerCase().includes('céline')
+            );
+            const otherFrenchVoices = frenchVoices.filter(v => 
+                !maleVoices.includes(v) && !femaleVoices.includes(v)
+            );
+            const nonFrenchVoices = voices.filter(v => !v.lang.startsWith('fr'));
             
-            const sortedVoices = [...frenchVoices, ...otherVoices];
+            // Créer les groupes d'options
+            if (femaleVoices.length > 0) {
+                const femaleGroup = document.createElement('optgroup');
+                femaleGroup.label = '🚺 Voix féminines françaises';
+                femaleVoices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name}`;
+                    femaleGroup.appendChild(option);
+                });
+                voiceSelect.appendChild(femaleGroup);
+            }
             
-            sortedVoices.forEach((voice, i) => {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `${voice.name} (${voice.lang})`;
-                if (voice.default) option.selected = true;
-                voiceSelect.appendChild(option);
-            });
+            if (maleVoices.length > 0) {
+                const maleGroup = document.createElement('optgroup');
+                maleGroup.label = '🚹 Voix masculines françaises';
+                maleVoices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name}`;
+                    maleGroup.appendChild(option);
+                });
+                voiceSelect.appendChild(maleGroup);
+            }
+            
+            if (otherFrenchVoices.length > 0) {
+                const otherFrGroup = document.createElement('optgroup');
+                otherFrGroup.label = '🇫🇷 Autres voix françaises';
+                otherFrenchVoices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name}`;
+                    if (voice.default) option.selected = true;
+                    otherFrGroup.appendChild(option);
+                });
+                voiceSelect.appendChild(otherFrGroup);
+            }
+            
+            if (nonFrenchVoices.length > 0) {
+                const otherGroup = document.createElement('optgroup');
+                otherGroup.label = '🌍 Autres langues';
+                nonFrenchVoices.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voices.indexOf(voice);
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    otherGroup.appendChild(option);
+                });
+                voiceSelect.appendChild(otherGroup);
+            }
         }
 
         // Charger les voix au chargement et quand elles changent
+        // Sur mobile, il faut parfois attendre un peu
         loadVoices();
         if (synthesis.onvoiceschanged !== undefined) {
             synthesis.onvoiceschanged = loadVoices;
         }
+        
+        // Recharger après un délai pour mobile
+        setTimeout(loadVoices, 100);
+        setTimeout(loadVoices, 500);
 
         // Fonction de lecture
         function speak() {
@@ -309,42 +433,92 @@
 
             // Arrêter toute lecture en cours
             synthesis.cancel();
+            
+            // Petit délai pour iOS/Android
+            setTimeout(() => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Recharger les voix si nécessaire (bug mobile)
+                if (voices.length === 0) {
+                    voices = synthesis.getVoices();
+                }
+                
+                // Configurer la voix
+                const selectedVoice = voices[voiceSelect.value];
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Configurer la hauteur (limiter pour éviter les bugs)
+                let pitchValue = parseFloat(pitchSelect.value);
+                // Sur certains navigateurs, pitch trop bas cause des erreurs
+                if (pitchValue < 0.5) {
+                    // Pour mobile, on limite à 0.5 minimum
+                    utterance.pitch = Math.max(0.5, pitchValue);
+                    // Et on compense avec un rate plus lent pour effet grave
+                    utterance.rate = Math.min(parseFloat(rateSelect.value), parseFloat(rateSelect.value) * 0.8);
+                } else {
+                    utterance.pitch = pitchValue;
+                    utterance.rate = parseFloat(rateSelect.value);
+                }
+                
+                // Configurer le volume (important pour mobile)
+                utterance.volume = 1;
+                
+                // Configurer la langue (aide sur mobile)
+                utterance.lang = selectedVoice ? selectedVoice.lang : 'fr-FR';
+                
+                // Événements
+                utterance.onstart = () => {
+                    status.textContent = 'Lecture en cours...';
+                    status.className = 'status speaking';
+                    speakBtn.disabled = true;
+                    stopBtn.disabled = false;
+                };
+                
+                utterance.onend = () => {
+                    status.textContent = 'Lecture terminée';
+                    status.className = 'status idle';
+                    speakBtn.disabled = false;
+                    stopBtn.disabled = true;
+                };
+                
+                utterance.onerror = (e) => {
+                    console.error('Erreur de synthèse vocale:', e);
+                    console.error('Type erreur:', e.error);
+                    console.error('Message:', e.message);
+                    let errorMsg = 'Erreur de lecture';
+                    if (e.error === 'canceled') {
+                        errorMsg = 'Lecture annulée';
+                    } else if (e.error === 'interrupted') {
+                        errorMsg = 'Lecture interrompue';
+                    } else if (e.error === 'audio-busy') {
+                        errorMsg = 'Audio occupé';
+                    } else if (e.error === 'not-allowed') {
+                        errorMsg = 'Autorisations manquantes';
+                    } else if (e.error === 'network') {
+                        errorMsg = 'Erreur réseau';
+                    } else if (e.error === 'synthesis-unavailable') {
+                        errorMsg = 'Synthèse vocale non disponible';
+                    } else if (e.error === 'synthesis-failed') {
+                        errorMsg = 'Échec de la synthèse';
+                    } else {
+                        errorMsg = 'Erreur: ' + e.error;
+                    }
+                    status.textContent = errorMsg;
+                    status.className = 'status idle';
+                    speakBtn.disabled = false;
+                    stopBtn.disabled = true;
+                };
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            
-            // Configurer la voix
-            const selectedVoice = voices[voiceSelect.value];
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
-            }
-            
-            // Configurer la vitesse
-            utterance.rate = parseFloat(rateSelect.value);
-            
-            // Événements
-            utterance.onstart = () => {
-                status.textContent = 'Lecture en cours...';
-                status.className = 'status speaking';
-                speakBtn.disabled = true;
-                stopBtn.disabled = false;
-            };
-            
-            utterance.onend = () => {
-                status.textContent = 'Lecture terminée';
-                status.className = 'status idle';
-                speakBtn.disabled = false;
-                stopBtn.disabled = true;
-            };
-            
-            utterance.onerror = (e) => {
-                console.error('Erreur de synthèse vocale:', e);
-                status.textContent = 'Erreur de lecture';
-                status.className = 'status idle';
-                speakBtn.disabled = false;
-                stopBtn.disabled = true;
-            };
-
-            synthesis.speak(utterance);
+                // Sur iOS/Android, il faut parfois relancer
+                try {
+                    synthesis.speak(utterance);
+                } catch (err) {
+                    console.error('Erreur speak:', err);
+                    alert('Erreur de lecture. Essayez de recharger la page.');
+                }
+            }, 100);
         }
 
         // Fonction d'arrêt
@@ -362,10 +536,36 @@
             textInput.focus();
         }
 
-        // Événements des boutons
-        speakBtn.addEventListener('click', speak);
-        stopBtn.addEventListener('click', stop);
-        clearBtn.addEventListener('click', clear);
+        // Événements des boutons - avec touch events pour mobile
+        speakBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            speak();
+        });
+        
+        speakBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            speak();
+        });
+        
+        stopBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            stop();
+        });
+        
+        stopBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            stop();
+        });
+        
+        clearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            clear();
+        });
+        
+        clearBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            clear();
+        });
 
         // Raccourci clavier : Ctrl+Entrée pour lire
         textInput.addEventListener('keydown', (e) => {
