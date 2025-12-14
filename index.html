@@ -126,7 +126,8 @@
             background: white;
             color: #1f2937;
         }
-.buttons {
+
+        .buttons {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
@@ -231,16 +232,64 @@
             color: #6b7280;
         }
 
-        .history-section {
-            margin-top: 30px;
-            padding-top: 30px;
+        .collapsible-section {
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 3px solid #e5e7eb;
         }
 
-        .history-section h2 {
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            background: #f3f4f6;
+        }
+
+        .section-header h2 {
             color: #1f2937;
-            margin-bottom: 15px;
             font-size: 1.3em;
+            margin: 0;
+        }
+
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+
+        .toggle-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+            opacity: 1;
+            margin-top: 15px;
+        }
+
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
         }
 
         .history-container {
@@ -254,8 +303,8 @@
 
         .history-item {
             background: white;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
             border-radius: 8px;
             border-left: 4px solid #3b82f6;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -267,52 +316,60 @@
 
         .history-text {
             color: #1f2937;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             line-height: 1.5;
             word-wrap: break-word;
         }
 
         .history-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .history-btn {
-            padding: 8px 16px;
+        .icon-btn {
+            padding: 8px 12px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .history-btn-play {
+        .icon-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .icon-btn-play {
             background: #22c55e;
             color: white;
         }
 
-        .history-btn-play:hover {
+        .icon-btn-play:hover {
             background: #16a34a;
         }
 
-        .history-btn-copy {
+        .icon-btn-copy {
             background: #6b7280;
             color: white;
         }
 
-        .history-btn-copy:hover {
+        .icon-btn-copy:hover {
             background: #4b5563;
         }
 
-        .history-btn-delete {
+        .icon-btn-delete {
             background: #ef4444;
             color: white;
         }
 
-        .history-btn-delete:hover {
+        .icon-btn-delete:hover {
             background: #dc2626;
         }
 
@@ -326,7 +383,7 @@
         .clear-history-btn {
             margin-top: 15px;
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #ef4444;
             color: white;
             border: none;
@@ -334,21 +391,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .clear-history-btn:hover {
             background: #dc2626;
-        }
-.quick-phrases-section {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 3px solid #e5e7eb;
-        }
-
-        .quick-phrases-section h2 {
-            color: #1f2937;
-            margin-bottom: 15px;
-            font-size: 1.3em;
         }
 
         .quick-phrases-container {
@@ -361,14 +408,15 @@
 
         .quick-phrase-item {
             background: white;
-            padding: 12px 15px;
-            margin-bottom: 8px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
             border-radius: 8px;
             border-left: 4px solid #22c55e;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: all 0.2s;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
             gap: 10px;
         }
 
@@ -383,65 +431,64 @@
         .quick-phrase-text {
             color: #1f2937;
             font-weight: 500;
+            flex: 1;
         }
 
         .quick-phrase-actions {
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
-        .quick-phrase-btn {
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 600;
+        .quick-icon-btn {
+            padding: 6px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             touch-action: manipulation;
-            flex: 1;
-            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
         }
 
-        .quick-phrase-btn-use {
+        .quick-icon-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .quick-icon-btn-use {
             background: #22c55e;
             color: white;
         }
 
-        .quick-phrase-btn-use:hover {
+        .quick-icon-btn-use:hover {
             background: #16a34a;
         }
 
-        .quick-phrase-btn-read {
+        .quick-icon-btn-read {
             background: #3b82f6;
             color: white;
         }
 
-        .quick-phrase-btn-read:hover {
+        .quick-icon-btn-read:hover {
             background: #2563eb;
         }
 
-        .quick-phrase-btn-delete {
+        .quick-icon-btn-delete {
             background: #ef4444;
             color: white;
-            flex: 0;
-            min-width: auto;
         }
 
-        .quick-phrase-btn-delete:hover {
+        .quick-icon-btn-delete:hover {
             background: #dc2626;
-        }
-
-        .quick-phrase-help {
-            font-size: 0.9em;
-            color: #6b7280;
-            margin-bottom: 10px;
         }
 
         .add-quick-phrase-btn {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: #22c55e;
             color: white;
             border: none;
@@ -449,7 +496,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .add-quick-phrase-btn:hover {
@@ -489,6 +536,16 @@
 
             .buttons {
                 gap: 12px;
+            }
+
+            .quick-phrase-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .quick-phrase-actions {
+                width: 100%;
+                justify-content: flex-end;
             }
         }
     </style>
@@ -552,33 +609,48 @@
             Prêt à lire
         </div>
 
-        <div class="quick-phrases-section">
-            <h2>Phrases rapides</h2>
-            <div class="quick-phrase-help">
-                Utilisez les boutons ci-dessous pour chaque phrase
-            </div>
-            <div class="quick-phrases-container" id="quickPhrasesContainer">
-            </div>
-            <button class="add-quick-phrase-btn" id="addQuickPhraseBtn">
-                Ajouter la phrase actuelle aux phrases rapides
-            </button>
-        </div>
-
-        <div class="history-section">
-            <h2>Historique des phrases</h2>
-            <div class="history-container" id="historyContainer">
-                <div class="history-empty">
-                    Aucune phrase dans l'historique. Les phrases lues apparaîtront ici.
+        <div class="collapsible-section">
+            <div class="section-header" onclick="toggleSection('quickPhrases')">
+                <h2>Phrases rapides</h2>
+                <div class="section-toggle">
+                    <span id="quickPhrasesCount"></span>
+                    <svg class="toggle-icon" id="quickPhrasesIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                 </div>
             </div>
-            <button class="clear-history-btn" id="clearHistoryBtn" style="display: none;">
-                Effacer tout l'historique
-            </button>
+            <div class="section-content" id="quickPhrasesContent">
+                <div class="quick-phrases-container" id="quickPhrasesContainer"></div>
+                <button class="add-quick-phrase-btn" id="addQuickPhraseBtn">
+                    Ajouter la phrase actuelle
+                </button>
+            </div>
+        </div>
+
+        <div class="collapsible-section">
+            <div class="section-header" onclick="toggleSection('history')">
+                <h2>Historique des phrases</h2>
+                <div class="section-toggle">
+                    <span id="historyCount"></span>
+                    <svg class="toggle-icon" id="historyIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="section-content" id="historyContent">
+                <div class="history-container" id="historyContainer">
+                    <div class="history-empty">
+                        Aucune phrase dans l'historique.
+                    </div>
+                </div>
+                <button class="clear-history-btn" id="clearHistoryBtn" style="display: none;">
+                    Effacer tout l'historique
+                </button>
+            </div>
         </div>
     </div>
-
-    <script>
-const textInput = document.getElementById('textInput');
+<script>
+        const textInput = document.getElementById('textInput');
         const voiceSelect = document.getElementById('voiceSelect');
         const rateSelect = document.getElementById('rateSelect');
         const pitchSelect = document.getElementById('pitchSelect');
@@ -596,7 +668,6 @@ const textInput = document.getElementById('textInput');
         let history = [];
         let quickPhrases = [];
 
-        // Phrases rapides par défaut
         const defaultQuickPhrases = [
             "Oui",
             "Non",
@@ -611,7 +682,25 @@ const textInput = document.getElementById('textInput');
             "Ne soyez pas validiste !"
         ];
 
-        // Charger les voix disponibles
+        // Fonction pour replier/déplier les sections
+        function toggleSection(sectionName) {
+            const content = document.getElementById(sectionName + 'Content');
+            const icon = document.getElementById(sectionName + 'Icon');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('collapsed');
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('collapsed');
+            }
+        }
+
+        function updateSectionCounts() {
+            document.getElementById('quickPhrasesCount').textContent = `${quickPhrases.length} phrase${quickPhrases.length > 1 ? 's' : ''}`;
+            document.getElementById('historyCount').textContent = `${history.length} phrase${history.length > 1 ? 's' : ''}`;
+        }
+
         function loadVoices() {
             voices = synthesis.getVoices();
             voiceSelect.innerHTML = '';
@@ -623,22 +712,14 @@ const textInput = document.getElementById('textInput');
                 v.name.toLowerCase().includes('thomas') ||
                 v.name.toLowerCase().includes('daniel') ||
                 v.name.toLowerCase().includes('paul') ||
-                v.name.toLowerCase().includes('henri') ||
-                v.name.toLowerCase().includes('alain') ||
-                v.name.toLowerCase().includes('claude') ||
-                v.name.toLowerCase().includes('jerome') ||
-                v.name.toLowerCase().includes('maurice')
+                v.name.toLowerCase().includes('henri')
             );
             const femaleVoices = frenchVoices.filter(v => 
                 v.name.toLowerCase().includes('female') || 
                 v.name.toLowerCase().includes('femme') ||
                 v.name.toLowerCase().includes('amélie') ||
                 v.name.toLowerCase().includes('marie') ||
-                v.name.toLowerCase().includes('céline') ||
-                v.name.toLowerCase().includes('denise') ||
-                v.name.toLowerCase().includes('eloise') ||
-                v.name.toLowerCase().includes('brigitte') ||
-                v.name.toLowerCase().includes('hortense')
+                v.name.toLowerCase().includes('céline')
             );
             const otherFrenchVoices = frenchVoices.filter(v => 
                 !maleVoices.includes(v) && !femaleVoices.includes(v)
@@ -651,7 +732,7 @@ const textInput = document.getElementById('textInput');
                 femaleVoices.forEach(voice => {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
-                    option.textContent = `${voice.name}`;
+                    option.textContent = voice.name;
                     femaleGroup.appendChild(option);
                 });
                 voiceSelect.appendChild(femaleGroup);
@@ -663,7 +744,7 @@ const textInput = document.getElementById('textInput');
                 maleVoices.forEach(voice => {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
-                    option.textContent = `${voice.name}`;
+                    option.textContent = voice.name;
                     maleGroup.appendChild(option);
                 });
                 voiceSelect.appendChild(maleGroup);
@@ -675,7 +756,7 @@ const textInput = document.getElementById('textInput');
                 otherFrenchVoices.forEach(voice => {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
-                    option.textContent = `${voice.name}`;
+                    option.textContent = voice.name;
                     if (voice.default) option.selected = true;
                     otherFrGroup.appendChild(option);
                 });
@@ -701,7 +782,7 @@ const textInput = document.getElementById('textInput');
         }
         setTimeout(loadVoices, 100);
         setTimeout(loadVoices, 500);
-// Charger les phrases rapides
+
         function loadQuickPhrases() {
             const storedData = {};
             for (let i = 0; i < 100; i++) {
@@ -720,15 +801,13 @@ const textInput = document.getElementById('textInput');
             }
             
             renderQuickPhrases();
+            updateSectionCounts();
         }
 
         function saveQuickPhrases() {
-            // Effacer les anciennes clés
             for (let i = 0; i < 100; i++) {
                 localStorage.removeItem(`quickPhrase_${i}`);
             }
-            
-            // Sauvegarder les nouvelles
             quickPhrases.forEach((phrase, index) => {
                 localStorage.setItem(`quickPhrase_${index}`, phrase);
             });
@@ -736,7 +815,8 @@ const textInput = document.getElementById('textInput');
 
         function renderQuickPhrases() {
             if (quickPhrases.length === 0) {
-                quickPhrasesContainer.innerHTML = '<div class="history-empty">Aucune phrase rapide. Ajoutez-en avec le bouton ci-dessous.</div>';
+                quickPhrasesContainer.innerHTML = '<div class="history-empty">Aucune phrase rapide.</div>';
+                updateSectionCounts();
                 return;
             }
 
@@ -747,24 +827,28 @@ const textInput = document.getElementById('textInput');
                     <div class="quick-phrase-item">
                         <div class="quick-phrase-text">${escapedText}</div>
                         <div class="quick-phrase-actions">
-                            <button class="quick-phrase-btn quick-phrase-btn-use" onclick="useQuickPhrase(${index})">
-                                Utiliser
+                            <button class="quick-icon-btn quick-icon-btn-use" onclick="useQuickPhrase(${index})" title="Utiliser">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
                             </button>
-                            <button class="quick-phrase-btn quick-phrase-btn-read" onclick="readQuickPhrase(${index})">
-                                Lire
+                            <button class="quick-icon-btn quick-icon-btn-read" onclick="readQuickPhrase(${index})" title="Lire">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                </svg>
                             </button>
-                            <button class="quick-phrase-btn quick-phrase-btn-delete" onclick="deleteQuickPhrase(${index})">
-                                X
+                            <button class="quick-icon-btn quick-icon-btn-delete" onclick="deleteQuickPhrase(${index})" title="Supprimer">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
                             </button>
                         </div>
-                    </div>
-                `;
-            });
-            
-            quickPhrasesContainer.innerHTML = html;
-        }
-
-        function useQuickPhrase(index) {
+                    </div
+function useQuickPhrase(index) {
             const phrase = quickPhrases[index];
             if (phrase) {
                 textInput.value = phrase;
@@ -791,12 +875,12 @@ const textInput = document.getElementById('textInput');
         function addQuickPhrase() {
             const text = textInput.value.trim();
             if (!text) {
-                alert('Veuillez entrer du texte avant de l\'ajouter aux phrases rapides.');
+                alert('Veuillez entrer du texte.');
                 return;
             }
             
             if (quickPhrases.includes(text)) {
-                alert('Cette phrase existe déjà dans les phrases rapides.');
+                alert('Cette phrase existe déjà.');
                 return;
             }
             
@@ -805,14 +889,15 @@ const textInput = document.getElementById('textInput');
             renderQuickPhrases();
             
             const originalText = addQuickPhraseBtn.textContent;
-            addQuickPhraseBtn.textContent = 'Phrase ajoutée !';
+            addQuickPhraseBtn.textContent = '✓ Ajoutée !';
             setTimeout(() => {
                 addQuickPhraseBtn.textContent = originalText;
             }, 2000);
         }
 
         loadQuickPhrases();
-function speak() {
+
+        function speak() {
             const text = textInput.value.trim();
             
             if (!text) {
@@ -841,14 +926,8 @@ function speak() {
             }
             
             let pitchValue = parseFloat(pitchSelect.value);
-            if (pitchValue < 0.5) {
-                utterance.pitch = Math.max(0.5, pitchValue);
-                utterance.rate = Math.min(parseFloat(rateSelect.value), parseFloat(rateSelect.value) * 0.8);
-            } else {
-                utterance.pitch = pitchValue;
-                utterance.rate = parseFloat(rateSelect.value);
-            }
-            
+            utterance.pitch = pitchValue;
+            utterance.rate = parseFloat(rateSelect.value);
             utterance.volume = 1;
             utterance.lang = selectedVoice ? selectedVoice.lang : 'fr-FR';
             
@@ -870,10 +949,6 @@ function speak() {
                 let errorMsg = 'Erreur de lecture';
                 if (e.error === 'canceled') errorMsg = 'Lecture annulée';
                 else if (e.error === 'interrupted') errorMsg = 'Lecture interrompue';
-                else if (e.error === 'audio-busy') errorMsg = 'Audio occupé';
-                else if (e.error === 'not-allowed') errorMsg = 'Autorisations manquantes';
-                else if (e.error === 'network') errorMsg = 'Erreur réseau';
-                else errorMsg = 'Erreur: ' + e.error;
                 
                 status.textContent = errorMsg;
                 status.className = 'status idle';
@@ -884,7 +959,7 @@ function speak() {
             try {
                 synthesis.speak(utterance);
             } catch (err) {
-                alert('Erreur de lecture. Essayez de recharger la page.');
+                alert('Erreur de lecture.');
             }
         }
 
@@ -900,11 +975,11 @@ function speak() {
             textInput.value = '';
             textInput.focus();
         }
-function addToHistory(text) {
+
+        function addToHistory(text) {
             const item = {
                 id: Date.now(),
-                text: text,
-                timestamp: new Date().toLocaleString('fr-FR')
+                text: text
             };
             
             history.unshift(item);
@@ -913,8 +988,9 @@ function addToHistory(text) {
 
         function renderHistory() {
             if (history.length === 0) {
-                historyContainer.innerHTML = '<div class="history-empty">Aucune phrase dans l\'historique. Les phrases lues apparaîtront ici.</div>';
+                historyContainer.innerHTML = '<div class="history-empty">Aucune phrase dans l\'historique.</div>';
                 clearHistoryBtn.style.display = 'none';
+                updateSectionCounts();
                 return;
             }
 
@@ -927,15 +1003,33 @@ function addToHistory(text) {
                     <div class="history-item">
                         <div class="history-text">${escapedText}</div>
                         <div class="history-actions">
-                            <button class="history-btn history-btn-play" onclick="playHistory(${item.id})">Relire</button>
-                            <button class="history-btn history-btn-copy" onclick="copyHistory(${item.id})">Copier</button>
-                            <button class="history-btn history-btn-delete" onclick="deleteHistory(${item.id})">Supprimer</button>
+                            <button class="icon-btn icon-btn-play" onclick="playHistory(${item.id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                Relire
+                            </button>
+                            <button class="icon-btn icon-btn-copy" onclick="copyHistory(${item.id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copier
+                            </button>
+                            <button class="icon-btn icon-btn-delete" onclick="deleteHistory(${item.id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Supprimer
+                            </button>
                         </div>
                     </div>
                 `;
             });
             
             historyContainer.innerHTML = html;
+            updateSectionCounts();
         }
 
         function playHistory(id) {
@@ -971,14 +1065,12 @@ function addToHistory(text) {
             }
         }
 
-        // Événements des boutons principaux
         speakBtn.addEventListener('click', speak);
         stopBtn.addEventListener('click', stop);
         clearBtn.addEventListener('click', clear);
         addQuickPhraseBtn.addEventListener('click', addQuickPhrase);
         clearHistoryBtn.addEventListener('click', clearAllHistory);
 
-        // Raccourci clavier Ctrl+Entrée pour lire
         textInput.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 e.preventDefault();
