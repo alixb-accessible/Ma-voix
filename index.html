@@ -649,7 +649,8 @@
             </div>
         </div>
     </div>
-<script>
+
+    <script>
         const textInput = document.getElementById('textInput');
         const voiceSelect = document.getElementById('voiceSelect');
         const rateSelect = document.getElementById('rateSelect');
@@ -682,7 +683,6 @@
             "Ne soyez pas validiste !"
         ];
 
-        // Fonction pour replier/déplier les sections
         function toggleSection(sectionName) {
             const content = document.getElementById(sectionName + 'Content');
             const icon = document.getElementById(sectionName + 'Icon');
@@ -697,39 +697,37 @@
         }
 
         function updateSectionCounts() {
-            document.getElementById('quickPhrasesCount').textContent = `${quickPhrases.length} phrase${quickPhrases.length > 1 ? 's' : ''}`;
-            document.getElementById('historyCount').textContent = `${history.length} phrase${history.length > 1 ? 's' : ''}`;
+            document.getElementById('quickPhrasesCount').textContent = quickPhrases.length + ' phrase' + (quickPhrases.length > 1 ? 's' : '');
+            document.getElementById('historyCount').textContent = history.length + ' phrase' + (history.length > 1 ? 's' : '');
         }
 
         function loadVoices() {
             voices = synthesis.getVoices();
+            
+            if (voices.length === 0) {
+                return;
+            }
+            
             voiceSelect.innerHTML = '';
             
-            const frenchVoices = voices.filter(v => v.lang.startsWith('fr'));
-            const maleVoices = frenchVoices.filter(v => 
-                v.name.toLowerCase().includes('male') || 
-                v.name.toLowerCase().includes('homme') ||
-                v.name.toLowerCase().includes('thomas') ||
-                v.name.toLowerCase().includes('daniel') ||
-                v.name.toLowerCase().includes('paul') ||
-                v.name.toLowerCase().includes('henri')
-            );
-            const femaleVoices = frenchVoices.filter(v => 
-                v.name.toLowerCase().includes('female') || 
-                v.name.toLowerCase().includes('femme') ||
-                v.name.toLowerCase().includes('amélie') ||
-                v.name.toLowerCase().includes('marie') ||
-                v.name.toLowerCase().includes('céline')
-            );
-            const otherFrenchVoices = frenchVoices.filter(v => 
-                !maleVoices.includes(v) && !femaleVoices.includes(v)
-            );
-            const nonFrenchVoices = voices.filter(v => !v.lang.startsWith('fr'));
+            const frenchVoices = voices.filter(function(v) { return v.lang && v.lang.startsWith('fr'); });
+            const maleVoices = frenchVoices.filter(function(v) {
+                const name = v.name.toLowerCase();
+                return name.includes('male') || name.includes('homme') || name.includes('thomas') || name.includes('daniel') || name.includes('paul') || name.includes('henri');
+            });
+            const femaleVoices = frenchVoices.filter(function(v) {
+                const name = v.name.toLowerCase();
+                return name.includes('female') || name.includes('femme') || name.includes('amélie') || name.includes('marie') || name.includes('céline');
+            });
+            const otherFrenchVoices = frenchVoices.filter(function(v) {
+                return maleVoices.indexOf(v) === -1 && femaleVoices.indexOf(v) === -1;
+            });
+            const nonFrenchVoices = voices.filter(function(v) { return !v.lang || !v.lang.startsWith('fr'); });
             
             if (femaleVoices.length > 0) {
                 const femaleGroup = document.createElement('optgroup');
                 femaleGroup.label = 'Voix féminines françaises';
-                femaleVoices.forEach(voice => {
+                femaleVoices.forEach(function(voice) {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
                     option.textContent = voice.name;
@@ -741,7 +739,7 @@
             if (maleVoices.length > 0) {
                 const maleGroup = document.createElement('optgroup');
                 maleGroup.label = 'Voix masculines françaises';
-                maleVoices.forEach(voice => {
+                maleVoices.forEach(function(voice) {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
                     option.textContent = voice.name;
@@ -753,7 +751,7 @@
             if (otherFrenchVoices.length > 0) {
                 const otherFrGroup = document.createElement('optgroup');
                 otherFrGroup.label = 'Autres voix françaises';
-                otherFrenchVoices.forEach(voice => {
+                otherFrenchVoices.forEach(function(voice) {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
                     option.textContent = voice.name;
@@ -766,10 +764,10 @@
             if (nonFrenchVoices.length > 0) {
                 const otherGroup = document.createElement('optgroup');
                 otherGroup.label = 'Autres langues';
-                nonFrenchVoices.forEach(voice => {
+                nonFrenchVoices.forEach(function(voice) {
                     const option = document.createElement('option');
                     option.value = voices.indexOf(voice);
-                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.textContent = voice.name + ' (' + voice.lang + ')';
                     otherGroup.appendChild(option);
                 });
                 voiceSelect.appendChild(otherGroup);
@@ -782,11 +780,12 @@
         }
         setTimeout(loadVoices, 100);
         setTimeout(loadVoices, 500);
+        setTimeout(loadVoices, 1000);
 
         function loadQuickPhrases() {
             const storedData = {};
             for (let i = 0; i < 100; i++) {
-                const key = `quickPhrase_${i}`;
+                const key = 'quickPhrase_' + i;
                 const value = localStorage.getItem(key);
                 if (value) {
                     storedData[key] = value;
@@ -796,7 +795,7 @@
             if (Object.keys(storedData).length > 0) {
                 quickPhrases = Object.values(storedData);
             } else {
-                quickPhrases = [...defaultQuickPhrases];
+                quickPhrases = defaultQuickPhrases.slice();
                 saveQuickPhrases();
             }
             
@@ -806,10 +805,10 @@
 
         function saveQuickPhrases() {
             for (let i = 0; i < 100; i++) {
-                localStorage.removeItem(`quickPhrase_${i}`);
+                localStorage.removeItem('quickPhrase_' + i);
             }
-            quickPhrases.forEach((phrase, index) => {
-                localStorage.setItem(`quickPhrase_${index}`, phrase);
+            quickPhrases.forEach(function(phrase, index) {
+                localStorage.setItem('quickPhrase_' + index, phrase);
             });
         }
 
@@ -821,34 +820,29 @@
             }
 
             let html = '';
-            quickPhrases.forEach((phrase, index) => {
+            quickPhrases.forEach(function(phrase, index) {
                 const escapedText = phrase.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-                html += `
-                    <div class="quick-phrase-item">
-                        <div class="quick-phrase-text">${escapedText}</div>
-                        <div class="quick-phrase-actions">
-                            <button class="quick-icon-btn quick-icon-btn-use" onclick="useQuickPhrase(${index})" title="Utiliser">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                            </button>
-                            <button class="quick-icon-btn quick-icon-btn-read" onclick="readQuickPhrase(${index})" title="Lire">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                </svg>
-                            </button>
-                            <button class="quick-icon-btn quick-icon-btn-delete" onclick="deleteQuickPhrase(${index})" title="Supprimer">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div
-function useQuickPhrase(index) {
+                html += '<div class="quick-phrase-item">';
+                html += '<div class="quick-phrase-text">' + escapedText + '</div>';
+                html += '<div class="quick-phrase-actions">';
+                html += '<button class="quick-icon-btn quick-icon-btn-use" onclick="useQuickPhrase(' + index + ')" title="Utiliser">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+                html += '</button>';
+                html += '<button class="quick-icon-btn quick-icon-btn-read" onclick="readQuickPhrase(' + index + ')" title="Lire">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>';
+                html += '</button>';
+                html += '<button class="quick-icon-btn quick-icon-btn-delete" onclick="deleteQuickPhrase(' + index + ')" title="Supprimer">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+                html += '</button>';
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            quickPhrasesContainer.innerHTML = html;
+            updateSectionCounts();
+        }
+
+        function useQuickPhrase(index) {
             const phrase = quickPhrases[index];
             if (phrase) {
                 textInput.value = phrase;
@@ -879,7 +873,7 @@ function useQuickPhrase(index) {
                 return;
             }
             
-            if (quickPhrases.includes(text)) {
+            if (quickPhrases.indexOf(text) !== -1) {
                 alert('Cette phrase existe déjà.');
                 return;
             }
@@ -890,14 +884,13 @@ function useQuickPhrase(index) {
             
             const originalText = addQuickPhraseBtn.textContent;
             addQuickPhraseBtn.textContent = '✓ Ajoutée !';
-            setTimeout(() => {
+            setTimeout(function() {
                 addQuickPhraseBtn.textContent = originalText;
             }, 2000);
         }
 
         loadQuickPhrases();
-
-        function speak() {
+function speak() {
             const text = textInput.value.trim();
             
             if (!text) {
@@ -908,7 +901,7 @@ function useQuickPhrase(index) {
             addToHistory(text);
             synthesis.cancel();
             
-            setTimeout(() => {
+            setTimeout(function() {
                 speakText(text);
             }, 100);
         }
@@ -931,21 +924,21 @@ function useQuickPhrase(index) {
             utterance.volume = 1;
             utterance.lang = selectedVoice ? selectedVoice.lang : 'fr-FR';
             
-            utterance.onstart = () => {
+            utterance.onstart = function() {
                 status.textContent = 'Lecture en cours...';
                 status.className = 'status speaking';
                 speakBtn.disabled = true;
                 stopBtn.disabled = false;
             };
             
-            utterance.onend = () => {
+            utterance.onend = function() {
                 status.textContent = 'Lecture terminée';
                 status.className = 'status idle';
                 speakBtn.disabled = false;
                 stopBtn.disabled = true;
             };
             
-            utterance.onerror = (e) => {
+            utterance.onerror = function(e) {
                 let errorMsg = 'Erreur de lecture';
                 if (e.error === 'canceled') errorMsg = 'Lecture annulée';
                 else if (e.error === 'interrupted') errorMsg = 'Lecture interrompue';
@@ -997,35 +990,25 @@ function useQuickPhrase(index) {
             clearHistoryBtn.style.display = 'block';
             
             let html = '';
-            history.forEach(item => {
+            history.forEach(function(item) {
                 const escapedText = item.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-                html += `
-                    <div class="history-item">
-                        <div class="history-text">${escapedText}</div>
-                        <div class="history-actions">
-                            <button class="icon-btn icon-btn-play" onclick="playHistory(${item.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                </svg>
-                                Relire
-                            </button>
-                            <button class="icon-btn icon-btn-copy" onclick="copyHistory(${item.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                Copier
-                            </button>
-                            <button class="icon-btn icon-btn-delete" onclick="deleteHistory(${item.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
-                `;
+                html += '<div class="history-item">';
+                html += '<div class="history-text">' + escapedText + '</div>';
+                html += '<div class="history-actions">';
+                html += '<button class="icon-btn icon-btn-play" onclick="playHistory(' + item.id + ')">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                html += 'Relire';
+                html += '</button>';
+                html += '<button class="icon-btn icon-btn-copy" onclick="copyHistory(' + item.id + ')">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                html += 'Copier';
+                html += '</button>';
+                html += '<button class="icon-btn icon-btn-delete" onclick="deleteHistory(' + item.id + ')">';
+                html += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+                html += 'Supprimer';
+                html += '</button>';
+                html += '</div>';
+                html += '</div>';
             });
             
             historyContainer.innerHTML = html;
@@ -1033,28 +1016,28 @@ function useQuickPhrase(index) {
         }
 
         function playHistory(id) {
-            const item = history.find(h => h.id === id);
+            const item = history.find(function(h) { return h.id === id; });
             if (item) {
                 synthesis.cancel();
-                setTimeout(() => {
+                setTimeout(function() {
                     speakText(item.text);
                 }, 100);
             }
         }
 
         function copyHistory(id) {
-            const item = history.find(h => h.id === id);
+            const item = history.find(function(h) { return h.id === id; });
             if (item) {
-                navigator.clipboard.writeText(item.text).then(() => {
+                navigator.clipboard.writeText(item.text).then(function() {
                     alert('Texte copié !');
-                }).catch(() => {
+                }).catch(function() {
                     alert('Erreur lors de la copie');
                 });
             }
         }
 
         function deleteHistory(id) {
-            history = history.filter(h => h.id !== id);
+            history = history.filter(function(h) { return h.id !== id; });
             renderHistory();
         }
 
@@ -1064,14 +1047,13 @@ function useQuickPhrase(index) {
                 renderHistory();
             }
         }
-
-        speakBtn.addEventListener('click', speak);
+speakBtn.addEventListener('click', speak);
         stopBtn.addEventListener('click', stop);
         clearBtn.addEventListener('click', clear);
         addQuickPhraseBtn.addEventListener('click', addQuickPhrase);
         clearHistoryBtn.addEventListener('click', clearAllHistory);
 
-        textInput.addEventListener('keydown', (e) => {
+        textInput.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'Enter') {
                 e.preventDefault();
                 speak();
